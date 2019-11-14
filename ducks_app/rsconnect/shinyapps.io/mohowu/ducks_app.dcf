@@ -1,0 +1,12 @@
+name: ducks_app
+title: ducks_app
+username:
+account: mohowu
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1336428
+bundleId: 2589850
+url: https://mohowu.shinyapps.io/ducks_app/
+when: 1573755106.43801
+asMultiple: FALSE
+asStatic: FALSE

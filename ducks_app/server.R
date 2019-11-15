@@ -2,7 +2,7 @@ library(shiny)
 library(dplyr)
 library(lubridate)
 library(plotly)
-library(markdown)
+# library(markdown)
 
 which_week <- function(the_date) {
   
@@ -35,17 +35,16 @@ shinyServer(function(input, output) {
   
   # calc pot
   pot <- payment %>%
-    filter(Type == "paym", "DD") %>%
-    mutate(period = cut(Date, periods, right = TRUE, labels = 1:(length(periods) - 1))) %>%
+    filter(Type == "paym") %>%
+    mutate(period = cut(Date, periods, right = TRUE, labels = 1:(length(periods) - 1)),
+           Name = as.character(Name)) %>%
     group_by(period, Name) %>%
-    summarise(payment = sum(Payment)) %>%
-    group_by(period) %>%
-    mutate(n_divide = length(unique(Name))) %>%
-    left_join(bills[c("period", "Payment")]) %>%
-    mutate(Payment = tidyr::replace_na(Payment, 0),
-           pot = floor(Payment/n_divide) + payment) %>%
-    group_by(Name) %>%
-    summarise(pot = sum(pot, na.rm = TRUE))
+    summarise(pot = sum(Payment)) %>%
+    group_nest() %>%
+    left_join(bills[c("period", "Payment")], by = "period") %>%
+    mutate(Payment = tidyr::replace_na(Payment, 0)) 
+  
+  current_pot <- purrr::reduce2(pot$data, pot$Payment, calc_pot, .init = old_pot)
   
   output$no_week <- renderText(
     paste0("WEEK ", which_week(Sys.Date()), " OF 4")
@@ -53,7 +52,7 @@ shinyServer(function(input, output) {
 
   output$pot <- renderPlotly({
     
-    plot_ly(pot) %>%
+    plot_ly(current_pot) %>%
       add_pie(values = ~pot, labels = ~Name, textinfo = "text",
               text = ~paste0(Name, ": ", "£", pot),
               hoverinfo = "text",

@@ -27,6 +27,17 @@ shinyUI(material_page(
       color = "amber accent-1",
       depth = 5,
       plotlyOutput("pot")
+    ),
+    # debt
+    material_card(
+      title = span("PLAYERS BOOK", style="color:#9c27b0"),
+      color = "amber accent-2",
+      depth = 5,
+      span("In Debit", style="color:#9c27b0"),
+      tableOutput("debtit"),
+      span("In Credit", style="color:#9c27b0"),
+      tableOutput("credit"),
+      includeHTML("payment.html")
     )
   ),
   

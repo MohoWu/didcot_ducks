@@ -1,3 +1,20 @@
+# functions
+which_week <- function(the_date, cycle = FALSE) {
+  
+  weeks_from_start <- as.integer(floor((the_date - as_date("2019-11-11"))/7) + 1)
+  
+  no_cycle <- ifelse(weeks_from_start %% 4 == 0, 
+                     floor(weeks_from_start / 4) - 1,
+                     floor(weeks_from_start / 4))
+  
+  no_week <- ifelse(weeks_from_start > 4, 
+                    weeks_from_start %% 4, 
+                    weeks_from_start)
+  
+  # return cycle number or week number
+  if (cycle) no_cycle else as.numeric(no_week)
+  
+}
 round_05 <- function(x) {
   digit <- x - floor(x)
 
@@ -41,3 +58,6 @@ old_pot <- data.frame(Name = character(),
                       pot = numeric(0),
                       stringsAsFactors = FALSE)
 
+payment_sheet <- "https://docs.google.com/spreadsheets/d/1_KxXTywIfc3uySg9eIGZ97YWTNUqtiam2HsrND7W9fU/export?usp=sharing&format=csv"
+
+player_sheet <- "https://docs.google.com/spreadsheets/d/1qFj1TMgxHL37P-pT5UyTU3-ei5tEwrSFkBIp7-XB50s/export?usp=sharing&format=csv"

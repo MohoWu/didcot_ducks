@@ -30,21 +30,23 @@ shinyServer(function(input, output, session) {
     bills <- bills %>%
       mutate(period = cut(Date, periods, right = TRUE, labels = (1:(length(periods) - 1))))
     
+    # browser()
+    
     # calc pot
     pot <- payment() %>%
-      filter(Type %in% c("paym")) %>%
+      filter(Type %in% c("paym", "payp")) %>%
       mutate(period = cut(Date, periods, right = TRUE, labels = 1:(length(periods) - 1)),
              Name = as.character(Name)) %>%
       filter(which_week(Date, cycle = TRUE) <= current_cycle) %>% # filter up to current cycle
-      group_by(period, Name) %>% 
+      group_by(period, Name, Type, add = TRUE) %>% 
       summarise(pot = sum(Payment)) %>% # summarise the pot for each period
+      group_by(period) %>%
       group_nest() %>% 
       left_join(bills[c("period", "Payment")], by = "period") %>%
       mutate(Payment = tidyr::replace_na(Payment, 0))
     
     current_pot <- purrr::reduce2(pot$data, pot$Payment, calc_pot, .init = old_pot)
     
-    # browser()
     current_pot
     
   })

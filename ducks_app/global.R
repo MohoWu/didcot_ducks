@@ -26,6 +26,7 @@ round_05 <- function(x) {
     return(floor(x))
   }
 }
+
 calc_pot <- function(old, current, to_pay = -50) {
   
   # update pot money
@@ -40,7 +41,8 @@ calc_pot <- function(old, current, to_pay = -50) {
   if (to_pay != 0) {
     
     pot <- data %>%
-      filter(pot == 10) %>%
+      filter(pot >= 10,
+             Type == "paym") %>%
       mutate(dividor = length(unique(Name)),
              pot = purrr::map_dbl(remain/dividor,
                                   round_05)) %>%

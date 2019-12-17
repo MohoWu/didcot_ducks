@@ -49,7 +49,10 @@ calc_pot <- function(old, current, to_pay = -50) {
       select(Name, pot)
     
   } else {
-    return(data[c("Name", "pot")])
+    
+    pot <- data %>%
+      filter(Type == "paym") %>%
+      select(Name, pot)
   }
   
   pot

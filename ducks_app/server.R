@@ -131,7 +131,7 @@ shinyServer(function(input, output, session) {
 # plotting ----------------------------------------------------------------
 
   output$no_week <- renderText(
-    paste0("WEEK ", which_week(Sys.Date()), " OF 4")
+    paste0("  WEEK ", which_week(Sys.Date()))
   )
 
   output$pot <- renderPlotly({

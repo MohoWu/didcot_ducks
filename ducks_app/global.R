@@ -1,15 +1,17 @@
 # functions
 which_week <- function(the_date, cycle = FALSE) {
   
-  weeks_from_start <- as.integer(floor((the_date - as_date("2019-11-11"))/7) + 1)
+  cycles <- c(as.Date(c("2019-10-14", "2019-11-11", "2019-12-09")), 
+             seq(from = as.Date("2020-01-20"), by = "28 day", length.out = 12))
   
-  no_cycle <- ifelse(weeks_from_start %% 4 == 0, 
-                     floor(weeks_from_start / 4) - 1,
-                     floor(weeks_from_start / 4))
+  cycle_start_date <- purrr::map(the_date, ~cycles[max(which(.x >= cycles))])
   
-  no_week <- ifelse(weeks_from_start > 4, 
-                    weeks_from_start %% 4, 
-                    weeks_from_start)
+  # cycle_start_date <- cycle[max(which(the_date >= cycle))]
+  
+  no_week <- purrr::map2_int(the_date, cycle_start_date,
+                             ~as.integer(floor((.x - .y)/7) + 1))
+  
+  no_cycle <- purrr::map_dbl(the_date, ~max(which(.x >= cycles)))
   
   # return cycle number or week number
   if (cycle) no_cycle else as.numeric(no_week)

@@ -1,8 +1,19 @@
 # functions
+first_mondays <- function(year) {
+  
+  first_day <- paste0(year, "-01-01")
+  last_day <- paste0(year, "12-31")
+  
+  x <- seq(lubridate::ymd(first_day), ymd(last_day), by="1 day")
+  
+  x[lubridate::wday(x, label = TRUE) == "Mon" & lubridate::day(x) <= 7]
+}
+
+
 which_week <- function(the_date, cycle = FALSE) {
   
-  cycles <- c(as.Date(c("2019-10-14", "2019-11-11", "2019-12-09")), 
-             seq(from = as.Date("2020-01-20"), by = "28 day", length.out = 12))
+  cycles <- c(as.Date(c("2019-10-07", "2019-11-04", "2019-12-02")), 
+              first_mondays(2020))
   
   cycle_start_date <- purrr::map(the_date, ~cycles[max(which(.x >= cycles))])
   

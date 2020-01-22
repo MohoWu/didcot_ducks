@@ -34,7 +34,7 @@ shinyUI(material_page(
       color = "amber accent-2",
       depth = 5,
       span("In Debit", style="color:#9c27b0"),
-      tableOutput("debtit"),
+      tableOutput("debit"),
       span("In Credit", style="color:#9c27b0"),
       tableOutput("credit"),
       includeHTML("payment.html")

@@ -30,8 +30,6 @@ shinyServer(function(input, output, session) {
     bills <- bills %>%
       mutate(period = cut(Date, periods, right = TRUE, labels = (1:(length(periods) - 1))))
     
-    # browser()
-    
     # calc pot
     pot <- payment() %>%
       filter(Type %in% c("paym", "payp")) %>%
@@ -101,8 +99,6 @@ shinyServer(function(input, output, session) {
       
     }
     
-    # browser()
-
     # get PAYP people
     payp_players <- payment() %>%
       filter(Type == "payp") %>%
@@ -122,7 +118,14 @@ shinyServer(function(input, output, session) {
              debt = owe - paid) %>%
       filter(debt != 0)
 
-    bind_rows(debt, payp_tbl)
+    debt <- bind_rows(debt, payp_tbl) %>%
+      select(Name, debt) %>%
+      left_join(current_pot(), by = "Name") %>%
+      mutate(pot = ifelse(is.na(pot), 0, pot),
+             `Pay by month` = 10 - pot,
+             `Pay by game` = debt)
+    
+    debt
     
     
   })
@@ -146,11 +149,11 @@ shinyServer(function(input, output, session) {
     
   })
   
-  output$debtit <- renderTable({
+  output$debit <- renderTable({
     
     debt() %>%
       filter(debt > 0) %>%
-      select(Name, Debit = debt)
+      select(Name, `Pay by game`, `Pay by month`)
     
   })
   

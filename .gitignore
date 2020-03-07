@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+data/
+*.xlsx
+ducks_app/rsconnect/shinyapps.io/mohowu/ducks_app.dcf
+.secrets
